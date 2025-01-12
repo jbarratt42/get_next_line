@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jbarratt <jbarratt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:15:28 by jbarratt          #+#    #+#             */
-/*   Updated: 2025/01/12 12:35:54 by jbarratt         ###   ########.fr       */
+/*   Updated: 2025/01/12 13:06:57 by jbarratt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 ssize_t	create_list(t_node **head, int fd)
 {
@@ -58,25 +58,25 @@ t_node	*consume_list(t_node *head, char *str)
 
 char	*get_next_line(int fd)
 {
-	static t_node	*head;
+	static t_node	*head[MAX_OPEN_FILES + 3];
 	ssize_t			size;
 	char			*str;
 
-	if (head && !head->size)
+	if (head[fd] && !head[fd]->size)
 	{
-		free(head);
+		free(head[fd]);
 		return (NULL);
 	}
-	size = create_list(&head, fd);
+	size = create_list(&head[fd], fd);
 	if (size <= 0)
 		return (NULL);
 	str = malloc(size + 1);
 	if (!str)
 	{
-		free_node(head);
+		free_node(head[fd]);
 		return (NULL);
 	}
-	head = consume_list(head, str);
+	head[fd] = consume_list(head[fd], str);
 	str[size] = '\0';
 	return (str);
 }
