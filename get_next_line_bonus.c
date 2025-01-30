@@ -6,7 +6,7 @@
 /*   By: jbarratt <jbarratt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:15:28 by jbarratt          #+#    #+#             */
-/*   Updated: 2025/01/12 13:06:57 by jbarratt         ###   ########.fr       */
+/*   Updated: 2025/01/22 12:43:50 by jbarratt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,16 @@ ssize_t	create_list(t_node **head, int fd)
 	}
 	return (size + size_rest);
 }
+
+/*
+size_t	print_node(t_node *n)
+{
+	char	buf[BUFFER_SIZE + 1];
+	strncpy(buf, n->buf, n->size);
+	buf[n->size] = 0;
+	return(printf("%s", buf));
+}
+*/
 
 t_node	*consume_list(t_node *head, char *str)
 {
@@ -64,16 +74,18 @@ char	*get_next_line(int fd)
 
 	if (head[fd] && !head[fd]->size)
 	{
-		free(head[fd]);
+		free_node(&head[fd]);
 		return (NULL);
 	}
 	size = create_list(&head[fd], fd);
+	if (size == 0)
+		free_node(&head[fd]);
 	if (size <= 0)
 		return (NULL);
 	str = malloc(size + 1);
 	if (!str)
 	{
-		free_node(head[fd]);
+		free_node(&head[fd]);
 		return (NULL);
 	}
 	head[fd] = consume_list(head[fd], str);

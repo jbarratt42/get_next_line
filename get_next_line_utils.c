@@ -6,7 +6,7 @@
 /*   By: jbarratt <jbarratt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:17:55 by jbarratt          #+#    #+#             */
-/*   Updated: 2025/01/12 11:29:02 by jbarratt         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:55:36 by jbarratt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,12 @@ void	shift_left(t_node *n, size_t width)
 	n->size -= width;
 }
 
-void	free_node(t_node *n)
+void	free_node(t_node **n)
 {
-	if (n->next)
-		free_node(n->next);
-	free(n);
+	if (!*n)
+		return ;
+	if ((*n)->next)
+		free_node(&(*n)->next);
+	free(*n);
+	*n = NULL;
 }
