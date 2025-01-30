@@ -6,7 +6,7 @@
 /*   By: jbarratt <jbarratt@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:15:28 by jbarratt          #+#    #+#             */
-/*   Updated: 2025/01/22 12:43:50 by jbarratt         ###   ########.fr       */
+/*   Updated: 2025/01/30 09:33:06 by jbarratt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ ssize_t	create_list(t_node **head, int fd)
 
 	if (!*head)
 		return (add_node(head, fd));
-	shift_left(*head, seek_nl(*head) + 1);
 	size = seek_nl(*head) + 1;
 	if (size)
 		return (size);
@@ -35,16 +34,6 @@ ssize_t	create_list(t_node **head, int fd)
 	return (size + size_rest);
 }
 
-/*
-size_t	print_node(t_node *n)
-{
-	char	buf[BUFFER_SIZE + 1];
-	strncpy(buf, n->buf, n->size);
-	buf[n->size] = 0;
-	return(printf("%s", buf));
-}
-*/
-
 t_node	*consume_list(t_node *head, char *str)
 {
 	t_node	*tail;
@@ -59,6 +48,7 @@ t_node	*consume_list(t_node *head, char *str)
 	if (!head->next)
 	{
 		str[i] = '\n';
+		shift_left(head, seek_nl(head) + 1);
 		return (head);
 	}
 	tail = consume_list(head->next, str + i);
@@ -72,11 +62,6 @@ char	*get_next_line(int fd)
 	ssize_t			size;
 	char			*str;
 
-	if (head[fd] && !head[fd]->size)
-	{
-		free_node(&head[fd]);
-		return (NULL);
-	}
 	size = create_list(&head[fd], fd);
 	if (size == 0)
 		free_node(&head[fd]);
